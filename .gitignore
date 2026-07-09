@@ -8,3 +8,4 @@ dist
 
 # Prisma Client
 /src/generated/prisma
+/src/generated/prisma
