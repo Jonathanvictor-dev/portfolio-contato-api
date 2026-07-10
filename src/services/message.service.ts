@@ -6,7 +6,7 @@ export async function createMessage(data: CreateMessageRequest) {
   const blockedEmail = await blockedEmailRepository.findBlockedEmailByEmail(data.email);
 
   if (blockedEmail) {
-    throw new Error('Este email está bloqueado');
+    throw new Error('Este email está bloqueado para o envio de mensagens');
   }
 
   return messageRepository.createMessage(data);

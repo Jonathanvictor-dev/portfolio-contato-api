@@ -19,7 +19,7 @@ export async function create(req: Request<{}, {}, CreateMessageRequest>, res: Re
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
 
-    const statusCode = errorMessage === 'Este email está bloqueado' ? 403 : 400;
+    const statusCode = errorMessage === 'Este email está bloqueado para o envio de mensagens' ? 403 : 400;
 
     res.status(statusCode).json({
       message: errorMessage,

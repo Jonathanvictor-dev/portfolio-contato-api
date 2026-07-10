@@ -1,8 +1,8 @@
 import { prisma } from '../lib/prisma';
 
-export async function createBlockedEmail(email: string) {
+export async function createBlockedEmail(email: string, reason: string) {
   return prisma.blockedEmail.create({
-    data: { email },
+    data: { email, reason },
   });
 }
 

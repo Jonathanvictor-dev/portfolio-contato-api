@@ -57,6 +57,7 @@ API REST para gerenciamento de mensagens de contato com autenticação JWT.
 |-------|------|
 | id | String (UUID) |
 | email | String |
+| reason | String |
 | createdAt | DateTime |
 
 ## 📁 Estrutura do Projeto

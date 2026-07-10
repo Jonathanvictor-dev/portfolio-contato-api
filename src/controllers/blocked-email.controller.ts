@@ -4,9 +4,9 @@ import { BlockEmailRequest, BlockedEmailParams } from '../types/blocked-email.ty
 
 export async function block(req: Request<{}, {}, BlockEmailRequest>, res: Response): Promise<void> {
   try {
-    const { email } = req.body;
+    const { email, reason } = req.body;
 
-    const blockedEmail = await blockedEmailService.blockEmail(email);
+    const blockedEmail = await blockedEmailService.blockEmail(email, reason);
 
     res.status(201).json({
       message: 'Email bloqueado com sucesso',
