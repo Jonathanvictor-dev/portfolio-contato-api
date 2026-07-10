@@ -19,6 +19,8 @@ export const createMessageSchema = z.object({
   content: requiredString('Mensagem'),
 });
 
+export const blockedEmailParamsSchema = z.object({ email });
+
 export const blockEmailSchema = z.object({
   email,
   reason: requiredString('Motivo do bloqueio'),

@@ -170,7 +170,7 @@ DELETE /messages/:id
 ```
 POST   /blocked-emails
 GET    /blocked-emails
-DELETE /blocked-emails/:id
+DELETE /blocked-emails/:email
 ```
 
 ## 📜 Scripts

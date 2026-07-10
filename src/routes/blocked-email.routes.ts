@@ -3,7 +3,7 @@ import * as blockedEmailController from '../controllers/blocked-email.controller
 import { authMiddleware } from '../middlewares/auth.middleware';
 import { validate } from '../middlewares/validate.middleware';
 import { BlockedEmailParams } from '../types/blocked-email.types';
-import { blockEmailSchema, idParamsSchema } from '../validations/request.schemas';
+import { blockEmailSchema, blockedEmailParamsSchema } from '../validations/request.schemas';
 
 const blockedEmailRoutes = Router();
 
@@ -11,6 +11,11 @@ blockedEmailRoutes.post('/', authMiddleware, validate(blockEmailSchema), blocked
 
 blockedEmailRoutes.get('/', authMiddleware, blockedEmailController.getAll);
 
-blockedEmailRoutes.delete<BlockedEmailParams>('/:id', validate(idParamsSchema, 'params'), authMiddleware, blockedEmailController.unblock);
+blockedEmailRoutes.delete<BlockedEmailParams>(
+  '/:email',
+  authMiddleware,
+  validate(blockedEmailParamsSchema, 'params'),
+  blockedEmailController.unblock
+);
 
 export default blockedEmailRoutes;

@@ -9,13 +9,13 @@ export async function block(req: Request<{}, {}, BlockEmailRequest>, res: Respon
     const blockedEmail = await blockedEmailService.blockEmail(email, reason);
 
     res.status(201).json({
-      message: 'Email bloqueado com sucesso',
+      message: 'E-mail bloqueado com sucesso',
       data: blockedEmail,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro desconhecido';
 
-    const statusCode = message === 'Este email já está bloqueado' ? 409 : 400;
+    const statusCode = message === 'Este e-mail já está bloqueado' ? 409 : 400;
 
     res.status(statusCode).json({
       message,
@@ -23,12 +23,19 @@ export async function block(req: Request<{}, {}, BlockEmailRequest>, res: Respon
   }
 }
 
-export async function getAll(req: Request, res: Response): Promise<void> {
+export async function getAll(_req: Request, res: Response): Promise<void> {
   try {
     const blockedEmails = await blockedEmailService.getAllBlockedEmails();
 
+    if (blockedEmails.length === 0) {
+      res.status(200).json({
+        message: 'Nenhum e-mail bloqueado encontrado',
+      });
+      return;
+    };
+
     res.status(200).json({
-      message: 'Emails bloqueados listados com sucesso',
+      message: 'E-mails bloqueados listados com sucesso',
       data: blockedEmails,
     });
   } catch (error) {
@@ -42,18 +49,19 @@ export async function getAll(req: Request, res: Response): Promise<void> {
 
 export async function unblock(req: Request<BlockedEmailParams>, res: Response): Promise<void> {
   try {
-    const { id } = req.params;
+    const { email } = req.params;
 
-    await blockedEmailService.unblockEmail(id);
+    await blockedEmailService.unblockEmail(email);
 
     res.status(200).json({
-      message: 'Email desbloqueado com sucesso',
-      data: {},
+      message: 'E-mail desbloqueado com sucesso',
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro desconhecido';
 
-    res.status(400).json({
+    const statusCode = message === 'E-mail bloqueado não encontrado' ? 404 : 400;
+
+    res.status(statusCode).json({
       message,
     });
   }

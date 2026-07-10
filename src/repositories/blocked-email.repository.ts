@@ -20,8 +20,8 @@ export async function findAllBlockedEmails() {
   });
 }
 
-export async function deleteBlockedEmail(id: string) {
+export async function deleteBlockedEmail(email: string) {
   return prisma.blockedEmail.delete({
-    where: { id },
+    where: { email },
   });
 }

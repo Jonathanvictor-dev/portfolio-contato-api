@@ -4,5 +4,5 @@ export interface BlockEmailRequest {
 }
 
 export interface BlockedEmailParams extends Record<string, string> {
-  id: string;
+  email: string;
 }
