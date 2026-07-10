@@ -1,8 +1,8 @@
 # Portfolio Contato API
 
-API REST para gerenciamento de mensagens de contato com autenticação JWT.
+API REST para gerenciamento de mensagens de contato, com autenticação JWT e sessões persistidas no banco de dados.
 
-## 🚀 Tecnologias
+## Tecnologias
 
 - Node.js
 - Express
@@ -12,32 +12,46 @@ API REST para gerenciamento de mensagens de contato com autenticação JWT.
 - bcrypt
 - JWT
 
-## ✨ Funcionalidades
+## Funcionalidades
 
-**Pública:**
-- Envio de mensagens
-- Validação de emails bloqueados
+### Públicas
 
-**Administrativa (com JWT):**
-- Login e alteração de senha
-- Listagem e visualização de mensagens
-- Marcação de leitura e exclusão
-- Bloqueio e desbloqueio de emails
+- Envio de mensagens de contato
+- Impedimento de mensagens enviadas por e-mails bloqueados
 
-## 📊 Entidades
+### Administrativas
+
+- Login, logout e alteração de senha
+- Sessões persistidas e invalidadas no logout
+- Listagem, visualização, leitura e exclusão de mensagens
+- Bloqueio e desbloqueio de e-mails com motivo
+
+## Entidades
 
 ### User
+
 | Campo | Tipo |
-|-------|------|
+| --- | --- |
 | id | String (UUID) |
 | email | String |
 | password | String |
 | createdAt | DateTime |
 | updatedAt | DateTime |
 
-### Message
+### AuthSession
+
 | Campo | Tipo |
-|-------|------|
+| --- | --- |
+| id | String (UUID) |
+| userId | String (UUID) |
+| token | String |
+| expiresAt | DateTime |
+| createdAt | DateTime |
+
+### Message
+
+| Campo | Tipo |
+| --- | --- |
 | id | String (UUID) |
 | name | String |
 | email | String |
@@ -46,44 +60,25 @@ API REST para gerenciamento de mensagens de contato com autenticação JWT.
 | read | MessageRead? |
 
 ### MessageRead
+
 | Campo | Tipo |
-|-------|------|
+| --- | --- |
 | id | String (UUID) |
 | messageId | String (UUID) |
 | readAt | DateTime |
 
 ### BlockedEmail
+
 | Campo | Tipo |
-|-------|------|
+| --- | --- |
 | id | String (UUID) |
 | email | String |
 | reason | String |
 | createdAt | DateTime |
 
-## 📁 Estrutura do Projeto
+## Configuração
 
-```
-src/
-├── controllers/
-├── services/
-├── repositories/
-├── routes/
-├── middlewares/
-├── lib/
-│   └── prisma.ts
-├── types/
-├── app.ts
-└── server.ts
-
-prisma/
-├── migrations/
-├── schema.prisma
-└── seed.ts
-```
-
-## 🔧 Variáveis de Ambiente
-
-Copie `.env.example` para `.env` e configure:
+Crie o arquivo `.env` com as variáveis abaixo:
 
 ```env
 PORT=3004
@@ -94,144 +89,127 @@ JWT_SECRET=sua-chave-secreta-aqui
 ```
 
 | Variável | Descrição |
-|----------|-----------|
-| PORT | Porta da aplicação |
-| DATABASE_URL | Conexão PostgreSQL |
-| ADMIN_EMAIL | Email do admin (seed) |
-| ADMIN_PASSWORD | Senha do admin (seed) |
-| JWT_SECRET | Chave secreta JWT |
+| --- | --- |
+| `PORT` | Porta da aplicação |
+| `DATABASE_URL` | Conexão com PostgreSQL |
+| `ADMIN_EMAIL` | E-mail do administrador criado pelo seed |
+| `ADMIN_PASSWORD` | Senha inicial do administrador |
+| `JWT_SECRET` | Chave usada para assinar e validar JWTs |
 
-## 🚀 Como Rodar Localmente
+## Executar localmente
 
-### Pré-requisitos
-- Node.js (v18+)
-- PostgreSQL (v12+)
+Pré-requisitos: Node.js 18+ e PostgreSQL 12+.
 
-### Passo a Passo
-
-1. **Clonar repositório**
 ```bash
-git clone <url-do-repositorio>
-cd portfolio-contato-api
-```
-
-2. **Instalar dependências**
-```bash
+# Instala as dependências do projeto
 npm install
-```
 
-3. **Criar banco de dados**
-```bash
-createdb portfolio_api
-```
-
-4. **Configurar variáveis de ambiente**
-```bash
-cp .env.example .env
-# Edite o arquivo .env com suas configurações
-```
-
-5. **Executar migrations**
-```bash
+# Aplica as migrations no banco de dados local
 npx prisma migrate dev
-```
 
-6. **Executar seed (criar admin)**
-```bash
+# Cria o usuário administrador inicial
 npm run seed
-```
 
-7. **Iniciar servidor**
-```bash
+# Inicia a API em modo de desenvolvimento
 npm run dev
 ```
 
-Servidor rodando em: `http://localhost:3004`
+O servidor inicia em `http://localhost:3004`.
 
-## 🔌 Endpoints
+## Autenticação
 
-### Autenticação
-```
-POST   /auth/login
-POST   /auth/logout
-PATCH  /auth/password
-```
+Faça login para receber o token:
 
-### Mensagens
-```
-POST   /messages
-GET    /messages
-GET    /messages/:id
-PATCH  /messages/:id/read
-DELETE /messages/:id
+```http
+POST /auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@admin.com",
+  "password": "Admin@123"
+}
 ```
 
-### Emails Bloqueados
-```
-POST   /blocked-emails
-GET    /blocked-emails
-DELETE /blocked-emails/:email
-```
+Cada login cria uma sessão ativa em `AuthSession`. Rotas protegidas aceitam apenas tokens JWT válidos, não expirados e cuja sessão ainda exista no banco.
 
-## 📜 Scripts
+Envie o token nas rotas protegidas:
 
-```bash
-npm run dev      # Desenvolvimento com hot reload
-npm run build    # Build para produção
-npm start        # Iniciar produção
-npm run seed     # Executar seed
-```
-
-## 🔒 Autenticação
-
-Endpoints protegidos requerem token JWT:
-
-```
+```http
 Authorization: Bearer <token>
 ```
 
-Tokens expiram em 24 horas. Cada login cria uma sessão ativa no banco de dados;
-rotas protegidas aceitam somente tokens JWT válidos que possuam uma sessão ativa.
-O logout remove a sessão, invalidando o token imediatamente. Caso a sessão não
-exista ou tenha expirado, é necessário realizar login novamente.
+O token expira em 24 horas. O logout remove a sessão e invalida o token imediatamente:
 
-## 📄 Licença
-
-ISC
-
-### 7. Iniciar aplicação
-
-```bash
-npm run dev
+```http
+POST /auth/logout
+Authorization: Bearer <token>
 ```
 
-## Usuário Administrador
+Se a sessão não existir ou tiver expirado, faça login novamente.
 
-O administrador é criado automaticamente através do seed utilizando os valores configurados em:
+## Endpoints
 
-```env
-ADMIN_EMAIL
-ADMIN_PASSWORD
+### Autenticação
+
+| Método | Rota | Protegida |
+| --- | --- | --- |
+| POST | `/auth/login` | Não |
+| POST | `/auth/logout` | Sim |
+| PATCH | `/auth/password` | Sim |
+
+### Mensagens
+
+| Método | Rota | Protegida |
+| --- | --- | --- |
+| POST | `/messages` | Não |
+| GET | `/messages` | Sim |
+| GET | `/messages/:id` | Sim |
+| PATCH | `/messages/:id/read` | Sim |
+| DELETE | `/messages/:id` | Sim |
+
+### E-mails bloqueados
+
+| Método | Rota | Protegida |
+| --- | --- | --- |
+| POST | `/blocked-emails` | Sim |
+| GET | `/blocked-emails` | Sim |
+| DELETE | `/blocked-emails/:email` | Sim |
+
+Para bloquear um e-mail, envie o motivo no corpo da requisição:
+
+```http
+POST /blocked-emails
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "email": "email@exemplo.com",
+  "reason": "Mensagens indevidas"
+}
 ```
 
-Após o primeiro acesso, recomenda-se alterar a senha.
+Para desbloquear, passe o e-mail como path parameter. O caractere `@` pode ser usado diretamente:
 
-## Scripts
-
-```bash
-npm run dev
+```http
+DELETE /blocked-emails/email@exemplo.com
+Authorization: Bearer <token>
 ```
 
-Executa a aplicação em ambiente de desenvolvimento.
+## Executar em produção
 
 ```bash
+# Instala as dependências conforme package-lock.json
+npm ci
+
+# Aplica as migrations já existentes no banco de produção
+npx prisma migrate deploy
+
+# Cria o usuário administrador inicial, se necessário
+npm run seed
+
+# Gera a versão de produção em dist/
 npm run build
-```
 
-Gera a versão de produção.
-
-```bash
+# Inicia a versão compilada
 npm start
 ```
-
-Cria o usuário administrador inicial.
