@@ -226,7 +226,7 @@ npm run build
 Gera a versão de produção.
 
 ```bash
-npm run seed
+npm start
 ```
 
 Cria o usuário administrador inicial.

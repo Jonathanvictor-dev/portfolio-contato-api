@@ -4,6 +4,6 @@ export interface CreateMessageRequest {
   content: string;
 }
 
-export interface MessageParams {
+export interface MessageParams extends Record<string, string> {
   id: string;
 }
