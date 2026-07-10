@@ -73,7 +73,6 @@ export async function markAsRead(req: Request<MessageParams>, res: Response): Pr
 
     res.status(200).json({
       message: 'Mensagem marcada como lida',
-      data: {},
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro desconhecido';
@@ -94,7 +93,6 @@ export async function deleteMessage(req: Request<MessageParams>, res: Response):
 
     res.status(200).json({
       message: 'Mensagem deletada com sucesso',
-      data: {},
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro desconhecido';
