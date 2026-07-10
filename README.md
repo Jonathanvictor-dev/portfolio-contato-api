@@ -152,6 +152,7 @@ Servidor rodando em: `http://localhost:3004`
 ### Autenticação
 ```
 POST   /auth/login
+POST   /auth/logout
 PATCH  /auth/password
 ```
 
@@ -188,7 +189,10 @@ Endpoints protegidos requerem token JWT:
 Authorization: Bearer <token>
 ```
 
-Tokens expiram em 24 horas.
+Tokens expiram em 24 horas. Cada login cria uma sessão ativa no banco de dados;
+rotas protegidas aceitam somente tokens JWT válidos que possuam uma sessão ativa.
+O logout remove a sessão, invalidando o token imediatamente. Caso a sessão não
+exista ou tenha expirado, é necessário realizar login novamente.
 
 ## 📄 Licença
 

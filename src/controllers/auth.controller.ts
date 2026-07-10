@@ -40,8 +40,7 @@ export async function changePassword(req: Request<{}, {}, ChangePasswordRequest>
     });
 
     res.status(200).json({
-      message: 'Senha alterada com sucesso',
-      data: {},
+      message: 'Senha alterada com sucesso'
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Erro desconhecido';
@@ -52,9 +51,16 @@ export async function changePassword(req: Request<{}, {}, ChangePasswordRequest>
   }
 }
 
-export async function logout(_req: Request, res: Response): Promise<void> {
+export async function logout(req: Request, res: Response): Promise<void> {
   try {
-    await authService.logout();
+    if (!req.token) {
+      res.status(401).json({
+        message: 'Token n\u00e3o fornecido',
+      });
+      return;
+    }
+
+    await authService.logout(req.token);
 
     res.status(200).json({
       message: 'Logout realizado com sucesso'

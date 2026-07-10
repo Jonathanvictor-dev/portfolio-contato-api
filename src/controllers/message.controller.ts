@@ -27,7 +27,7 @@ export async function create(req: Request<{}, {}, CreateMessageRequest>, res: Re
   }
 }
 
-export async function getAll(req: Request, res: Response): Promise<void> {
+export async function getAll(_req: Request, res: Response): Promise<void> {
   try {
     const messages = await messageService.getAllMessages();
 
