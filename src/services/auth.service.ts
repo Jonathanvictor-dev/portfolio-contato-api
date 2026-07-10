@@ -49,3 +49,7 @@ export async function changePassword(data: ChangePasswordRequest): Promise<void>
     password: hashedPassword,
   });
 }
+
+export async function logout(): Promise<void> {
+  return;
+}

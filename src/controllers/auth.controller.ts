@@ -51,3 +51,19 @@ export async function changePassword(req: Request<{}, {}, ChangePasswordRequest>
     });
   }
 }
+
+export async function logout(_req: Request, res: Response): Promise<void> {
+  try {
+    await authService.logout();
+
+    res.status(200).json({
+      message: 'Logout realizado com sucesso'
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Erro desconhecido';
+
+    res.status(500).json({
+      message,
+    });
+  }
+}

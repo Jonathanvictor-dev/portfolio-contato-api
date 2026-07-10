@@ -8,6 +8,8 @@ const authRoutes = Router();
 
 authRoutes.post('/login', validate(loginSchema), authController.login);
 
+authRoutes.post('/logout', authMiddleware, authController.logout);
+
 authRoutes.patch('/password', authMiddleware, validate(changePasswordSchema), authController.changePassword);
 
 export default authRoutes;
