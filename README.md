@@ -2,6 +2,18 @@
 
 API REST para gerenciamento de mensagens de contato, com autenticação JWT e sessões persistidas no banco de dados.
 
+## Projeto Relacionado
+
+Esta API é utilizada no portfólio para:
+
+- Receber mensagens enviadas pelo formulário de contato
+- Permitir autenticação administrativa
+- Gerenciar mensagens recebidas
+- Gerenciar e-mails bloqueados
+
+Repositório Frontend:
+https://github.com/jonathanvictor-dev/portfolio-frontend
+
 ## Tecnologias
 
 - Node.js
