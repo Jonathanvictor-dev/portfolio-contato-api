@@ -14,6 +14,16 @@ Esta API é utilizada no portfólio para:
 Repositório Frontend:
 https://github.com/jonathanvictor-dev/portfolio-frontend
 
+## 🌐 Deploy
+
+O projeto está disponível em produção nos links abaixo:
+
+### Frontend
+https://jonathanvictor-dev.github.io/portfolio-frontend
+
+### Backend
+https://portfolio-contato-api-production.up.railway.app
+
 ## Tecnologias
 
 - Node.js
