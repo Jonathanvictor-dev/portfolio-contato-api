@@ -2,14 +2,18 @@ import * as messageRepository from '../repositories/message.repository';
 import * as blockedEmailRepository from '../repositories/blocked-email.repository';
 import { CreateMessageRequest } from '../types/message.types';
 
+const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
 export async function createMessage(data: CreateMessageRequest) {
-  const blockedEmail = await blockedEmailRepository.findBlockedEmailByEmail(data.email);
+  const email = normalizeEmail(data.email);
+
+  const blockedEmail = await blockedEmailRepository.findBlockedEmailByEmail(email);
 
   if (blockedEmail) {
     throw new Error('Este email está bloqueado para o envio de mensagens');
   }
 
-  return messageRepository.createMessage(data);
+  return messageRepository.createMessage({ ...data, email: email });
 }
 
 export async function getAllMessages() {
