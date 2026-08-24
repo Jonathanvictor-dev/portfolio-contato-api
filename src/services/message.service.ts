@@ -1,8 +1,7 @@
 import * as messageRepository from '../repositories/message.repository';
 import * as blockedEmailRepository from '../repositories/blocked-email.repository';
 import { CreateMessageRequest } from '../types/message.types';
-
-const normalizeEmail = (email: string) => email.trim().toLowerCase();
+import { normalizeEmail } from '../lib/utils/emailUtils';
 
 export async function createMessage(data: CreateMessageRequest) {
   const email = normalizeEmail(data.email);
